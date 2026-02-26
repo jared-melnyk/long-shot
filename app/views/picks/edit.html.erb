@@ -1,0 +1,13 @@
+<h1>Edit picks — <%= @tournament.name %></h1>
+
+<%= form_with url: pool_pick_path(@pool, @pick), method: :patch, local: true do |f| %>
+  <% 5.times do |i| %>
+    <p>
+      <label>Slot <%= i + 1 %></label>
+      <%= select_tag "golfer_ids[]", options_from_collection_for_select(@golfers, :id, :name, @pick.pick_golfers.find { |pg| pg.slot == i + 1 }&.golfer_id), include_blank: "Select golfer…" %>
+    </p>
+  <% end %>
+  <p><%= submit_tag "Update picks" %></p>
+<% end %>
+
+<p><%= link_to "Back to picks", pool_picks_path(@pool) %></p>

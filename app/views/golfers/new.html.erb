@@ -1,0 +1,12 @@
+<h1>Add golfer</h1>
+
+<%= form_with model: @golfer, local: true do |f| %>
+  <% if @golfer.errors.any? %>
+    <ul><% @golfer.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %></ul>
+  <% end %>
+  <p><%= f.label :name %> <%= f.text_field :name, required: true %></p>
+  <p><%= f.label :external_id, "External ID (for API)" %> <%= f.text_field :external_id %></p>
+  <p><%= f.submit "Add golfer" %></p>
+<% end %>
+
+<p><%= link_to "Back", golfers_path %></p>

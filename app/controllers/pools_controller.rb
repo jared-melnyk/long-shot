@@ -1,0 +1,41 @@
+class PoolsController < ApplicationController
+  def index
+    @pools = current_user.pools
+    @other_pools = Pool.where.not(id: @pools.pluck(:id))
+  end
+
+  def show
+    @pool = Pool.find(params[:id])
+    return render :show_join if !@pool.users.include?(current_user)
+  end
+
+  def new
+    @pool = Pool.new
+  end
+
+  def create
+    @pool = Pool.new(pool_params)
+    if @pool.save
+      @pool.pool_users.create!(user: current_user)
+      redirect_to @pool, notice: "Pool created. Add tournaments and invite others."
+    else
+      render :new, status: :unprocessable_entity
+    end
+  end
+
+  def join
+    @pool = Pool.find(params[:id])
+    if @pool.pool_users.exists?(user_id: current_user.id)
+      redirect_to @pool, notice: "You're already in this pool."
+    else
+      @pool.pool_users.create!(user: current_user)
+      redirect_to @pool, notice: "You joined the pool."
+    end
+  end
+
+  private
+
+  def pool_params
+    params.require(:pool).permit(:name)
+  end
+end

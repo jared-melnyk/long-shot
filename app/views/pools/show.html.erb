@@ -1,0 +1,45 @@
+<h1><%= @pool.name %></h1>
+
+<h2>Standings</h2>
+<ol>
+  <% @pool.standings.each_with_index do |(user, total), idx| %>
+    <li><%= user.name %> — $<%= number_with_delimiter(total.to_i) %></li>
+  <% end %>
+</ol>
+<% if @pool.standings.empty? %>
+  <p>No picks or results yet.</p>
+<% end %>
+
+<h2>Tournaments in this pool</h2>
+<ul>
+  <% @pool.tournaments.order(:starts_at).each do |t| %>
+    <li>
+      <%= t.name %> (<%= t.starts_at&.strftime("%b %d") %>)
+      <%= button_to "Remove", pool_pool_tournament_path(@pool, @pool.pool_tournaments.find_by(tournament: t)), method: :delete if @pool.pool_tournaments.exists?(tournament: t) %>
+    </li>
+  <% end %>
+</ul>
+<% if @pool.tournaments.empty? %>
+  <p>No tournaments added. Add one below.</p>
+<% end %>
+
+<%= form_with url: pool_pool_tournaments_path(@pool), method: :post do |f| %>
+  <%= f.select :tournament_id, options_from_collection_for_select(Tournament.order(:name) - @pool.tournaments, :id, :name), { include_blank: "Select tournament…" }, { name: "tournament_id" } %>
+  <%= f.submit "Add tournament" %>
+<% end %>
+
+<h2>Members</h2>
+<ul>
+  <% @pool.users.each do |u| %>
+    <li><%= u.name %> (<%= u.email %>) <%= button_to "Remove", pool_pool_user_path(@pool, @pool.pool_users.find_by(user: u)), method: :delete if @pool.pool_users.exists?(user: u) %></li>
+  <% end %>
+</ul>
+<%= form_with url: pool_pool_users_path(@pool), method: :post do |f| %>
+  <%= f.select :user_id, options_from_collection_for_select(User.order(:name) - @pool.users, :id, :name), { include_blank: "Select user…" }, { name: "user_id" } %>
+  <%= f.submit "Add member" %>
+<% end %>
+
+<p>
+  <%= link_to "My picks", pool_picks_path(@pool) %>
+</p>
+<p><%= link_to "Back to pools", pools_path %></p>

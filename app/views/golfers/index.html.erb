@@ -1,0 +1,14 @@
+<h1>Golfers</h1>
+
+<p><%= link_to "Add golfer", new_golfer_path %></p>
+
+<ul>
+  <% @golfers.each do |g| %>
+    <li><%= g.name %><%= " (ID: #{g.external_id})" if g.external_id.present? %></li>
+  <% end %>
+</ul>
+<% if @golfers.empty? %>
+  <p>No golfers yet. Add some so you can make picks.</p>
+<% end %>
+
+<p><%= link_to "Back", pools_path %></p>

@@ -1,0 +1,28 @@
+<h1>Sync from BALLDONTLIE API</h1>
+
+<p>Sync tournaments, golfers, and tournament results from the BALLDONTLIE PGA API. Set <code>BALLDONTLIE_API_KEY</code> in your <code>.env</code> file.</p>
+
+<%= form_with url: sync_tournaments_path, method: :post do |f| %>
+  <p>
+    <label>Season (year)</label>
+    <%= number_field_tag :season, Date.current.year, min: 2020, max: 2030 %>
+  </p>
+  <p><%= f.submit "Sync tournaments" %></p>
+<% end %>
+
+<h2>Sync tournament field (golfers)</h2>
+<p>Select a tournament synced from the API, then sync its field to add those players so you can make picks. Your golfer list grows one tournament at a time.</p>
+<% if @tournaments_with_api_id.any? %>
+  <%= form_with url: sync_field_path, method: :post do |f| %>
+    <p>
+      <label>Tournament</label>
+      <%= select_tag :tournament_id, options_from_collection_for_select(@tournaments_with_api_id, :id, :name), include_blank: "Select tournament…" %>
+    </p>
+    <p><%= f.submit "Sync field" %></p>
+  <% end %>
+  <p><small>Tournament field requires BALLDONTLIE GOAT tier. If you see 401, use “Sync results” on a completed tournament instead—that adds golfers from the leaderboard (ALL-STAR tier).</small></p>
+<% else %>
+  <p>No tournaments with API id yet. Sync tournaments above first.</p>
+<% end %>
+
+<p><%= link_to "Tournaments", tournaments_path %> · <%= link_to "Golfers", golfers_path %> · <%= link_to "Pools", pools_path %></p>

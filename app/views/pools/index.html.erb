@@ -1,0 +1,27 @@
+<h1>My pools</h1>
+
+<p><%= link_to "New pool", new_pool_path %></p>
+
+<% if @pools.any? %>
+  <h2>My pools</h2>
+  <ul>
+    <% @pools.each do |pool| %>
+      <li><%= link_to pool.name, pool_path(pool) %></li>
+    <% end %>
+  </ul>
+<% end %>
+
+<% if @other_pools.any? %>
+  <h2>Other pools</h2>
+  <ul>
+    <% @other_pools.each do |pool| %>
+      <li><%= link_to pool.name, pool_path(pool) %> — <%= button_to "Join", join_pool_path(pool), method: :post, form: { style: "display: inline-block;" } %></li>
+    <% end %>
+  </ul>
+<% end %>
+
+<% if @pools.empty? && @other_pools.empty? %>
+  <p>No pools yet. Create one to get started.</p>
+<% end %>
+
+<p><%= link_to "All tournaments", tournaments_path %> · <%= link_to "All golfers", golfers_path %> · <%= link_to "Sync from API", sync_index_path %></p>

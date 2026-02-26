@@ -1,0 +1,18 @@
+<h1>New pool</h1>
+
+<%= form_with model: @pool, local: true do |f| %>
+  <% if @pool.errors.any? %>
+    <ul>
+      <% @pool.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  <% end %>
+  <p>
+    <%= f.label :name %>
+    <%= f.text_field :name, required: true %>
+  </p>
+  <p><%= f.submit "Create pool" %></p>
+<% end %>
+
+<p><%= link_to "Back", pools_path %></p>

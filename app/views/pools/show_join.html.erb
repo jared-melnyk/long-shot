@@ -1,0 +1,4 @@
+<h1><%= @pool.name %></h1>
+<p>You're not in this pool yet.</p>
+<%= button_to "Join this pool", join_pool_path(@pool), method: :post %>
+<p><%= link_to "Back to my pools", pools_path %></p>

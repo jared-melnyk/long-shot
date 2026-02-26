@@ -1,0 +1,29 @@
+<h1>My picks — <%= @pool.name %></h1>
+
+<h2>Standings</h2>
+<ol>
+  <% @standings.each_with_index do |(user, total), idx| %>
+    <li><%= user.name %> — $<%= number_with_delimiter(total.to_i) %></li>
+  <% end %>
+</ol>
+
+<h2>Tournaments</h2>
+<ul>
+  <% @tournaments.each do |tournament| %>
+    <li>
+      <%= tournament.name %>
+      <% pick = Pick.find_by(user: current_user, tournament: tournament) %>
+      <% if pick&.pick_golfers&.any? %>
+        (<%= pick.golfers.map(&:name).join(", ") %>)
+        <%= link_to "Edit", edit_pool_pick_path(@pool, pick) %>
+      <% else %>
+        <%= link_to "Make picks", new_pool_pick_path(@pool, tournament_id: tournament.id) %>
+      <% end %>
+    </li>
+  <% end %>
+</ul>
+<% if @tournaments.empty? %>
+  <p>No tournaments in this pool yet. Add them from the pool page.</p>
+<% end %>
+
+<p><%= link_to "Back to #{@pool.name}", pool_path(@pool) %></p>

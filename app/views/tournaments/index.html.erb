@@ -1,0 +1,14 @@
+<h1>Tournaments</h1>
+
+<p><%= link_to "Add tournament", new_tournament_path %></p>
+
+<ul>
+  <% @tournaments.each do |t| %>
+    <li><%= link_to t.name, tournament_path(t) %> — <%= t.starts_at&.strftime("%b %d") %> to <%= t.ends_at&.strftime("%b %d") %></li>
+  <% end %>
+</ul>
+<% if @tournaments.empty? %>
+  <p>No tournaments yet. Add one to get started.</p>
+<% end %>
+
+<p><%= link_to "Sync from API", sync_index_path %> · <%= link_to "Back", pools_path %></p>
