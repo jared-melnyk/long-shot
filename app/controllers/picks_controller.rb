@@ -95,10 +95,28 @@ class PicksController < ApplicationController
   end
 
   def sync_tournament_field(tournament)
-    return if tournament.external_id.blank?
+    if tournament.external_id.blank?
+      flash.now[:alert] = "This tournament has no API id yet. Sync tournaments from the Sync page, then add this tournament to the pool."
+      return
+    end
 
-    BallDontLie::SyncTournamentField.new(tournament: tournament).call
+    result = BallDontLie::SyncTournamentField.new(tournament: tournament).call
+    if result[:total].to_i > 0
+      flash.now[:notice] = "Synced #{result[:total]} players for this tournament."
+    else
+      flash.now[:alert] = field_not_available_message(tournament)
+    end
   rescue => e
     Rails.logger.error("Failed to sync tournament field from API: #{e.class}: #{e.message}")
+    flash.now[:alert] = "Could not load tournament field: #{e.message}. Check BALLDONTLIE_API_KEY and that your plan includes the tournament field endpoint (GOAT tier)."
+  end
+
+  def field_not_available_message(tournament)
+    msg = "This tournament's field is not yet available from the API."
+    if tournament.starts_at.present?
+      msg += " Picks will open once the field is released (typically before #{tournament.starts_at.strftime('%B %-d')})."
+    end
+    msg += " You can try again later or use \"Sync field\" on the Sync page."
+    msg
   end
 end
