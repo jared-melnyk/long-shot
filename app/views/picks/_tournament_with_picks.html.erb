@@ -1,0 +1,14 @@
+<%# Renders one tournament with either "Picks TBD" or a bulleted list of the user's picks. %>
+<%# Locals: tournament, pool, pick (optional — current user's pick for this tournament) %>
+<%= tournament.name %> (<%= tournament.starts_at&.strftime("%b %d") %>)
+<% if pick&.pick_golfers&.any? %>
+  <ul class="list-disc list-inside ml-4 mt-1 space-y-0.5 text-gray-700">
+    <% pick.pick_golfers.order(:slot).each do |pg| %>
+      <li><%= pg.golfer&.name %></li>
+    <% end %>
+  </ul>
+  <%= link_to "Edit", edit_pool_pick_path(pool, pick), class: "text-emerald-600 hover:underline text-sm mt-1 inline-block" %>
+<% else %>
+  <p class="text-gray-500 text-sm mt-1">Picks TBD</p>
+  <%= link_to "Make picks", new_pool_pick_path(pool, tournament_id: tournament.id), class: "text-emerald-600 hover:underline text-sm mt-1 inline-block" %>
+<% end %>

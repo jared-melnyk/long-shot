@@ -7,6 +7,7 @@ class PicksController < ApplicationController
   def index
     @standings = @pool.standings
     @tournaments = @pool.tournaments.order(:starts_at)
+    @picks_by_tournament = Pick.where(user: current_user, tournament: @tournaments).includes(pick_golfers: :golfer).index_by(&:tournament_id)
   end
 
   def new

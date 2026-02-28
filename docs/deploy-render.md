@@ -89,9 +89,24 @@ So the app accepts requests to your domain and generates correct URLs:
 
 ---
 
-## 5. Subpath (jaredmelnyk.com/longshot)
+## 5. Subdomain setup (recommended)
 
-To serve the app at a subpath (e.g. `jaredmelnyk.com/longshot`):
+To serve the app at a subdomain (e.g. `longshot.jaredmelnyk.com`) using only DNS—no proxy or server config on Green Geeks:
+
+1. **In Render:** Open your **Web Service** → **Settings** → **Custom Domains** → **Add Custom Domain**. Enter `longshot.jaredmelnyk.com`. Do **not** set `RAILS_RELATIVE_URL_ROOT`; the app is served at the root of this host.
+2. **In Green Geeks:** Log in → **cPanel** → **Zone Editor** (or **Domains** → **DNS**). For jaredmelnyk.com, add:
+   - **Type:** CNAME  
+   - **Name:** `longshot`  
+   - **Target:** `long-shot-web.onrender.com`  
+   - **TTL:** 300 (or 3600)
+3. Save. After DNS propagates and Render issues SSL, the app will be at **https://longshot.jaredmelnyk.com**.
+4. **In Render:** Set **APP_HOST** = `longshot.jaredmelnyk.com` (in **Environment**) so links and redirects use the subdomain.
+
+---
+
+## 6. Subpath (jaredmelnyk.com/longshot)
+
+Alternative: serve the app at a path (e.g. `jaredmelnyk.com/longshot`). This requires reverse-proxy or proxy rules on Green Geeks; the subdomain approach above is simpler.
 
 1. In Render, open your **Web Service** → **Environment**.
 2. Add: **RAILS_RELATIVE_URL_ROOT** = `/longshot`.
@@ -100,7 +115,7 @@ To serve the app at a subpath (e.g. `jaredmelnyk.com/longshot`):
 
 ---
 
-## 6. SSL (HTTPS)
+## 7. SSL (HTTPS)
 
 Render provides **free SSL** for custom domains. After DNS is correct, Render will issue a certificate automatically. In **Settings** → **Custom Domains**, the domain should show as secured. If it doesn’t, wait for DNS to propagate and check Render’s status.
 
@@ -112,9 +127,8 @@ Render provides **free SSL** for custom domains. After DNS is correct, Render wi
 - [ ] `RAILS_MASTER_KEY` and `DATABASE_URL` set; optional `BALLDONTLIE_API_KEY` added.
 - [ ] App deploys and responds at the Render URL (e.g. `https://long-shot-web.onrender.com`).
 - [ ] Custom domain added in Render (Settings → Custom Domains).
-- [ ] CNAME (for www) or A record (for root) set in Green Geeks Zone Editor.
-- [ ] `APP_HOST` set in Render to your domain.
-- [ ] After DNS propagation, site loads over HTTPS at your domain.
+- [ ] **Subdomain (recommended):** CNAME for `longshot` → `long-shot-web.onrender.com` in Green Geeks Zone Editor; `APP_HOST` = `longshot.jaredmelnyk.com` in Render. **Or** root/www: CNAME or A record in Green Geeks; `APP_HOST` set to your domain.
+- [ ] After DNS propagation, site loads over HTTPS at your domain (e.g. `https://longshot.jaredmelnyk.com`).
 
 For Render-specific details: [Render Docs – Custom Domains](https://render.com/docs/custom-domains), [Render Docs – Deploy Rails](https://docs.render.com/deploy-rails).  
 For Green Geeks DNS: [Green Geeks – DNS (MX, CNAME, A)](https://www.greengeeks.com/support/article/how-do-i-change-dns-for-mx-cname-and-a-records/).
