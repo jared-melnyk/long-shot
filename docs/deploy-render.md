@@ -93,7 +93,7 @@ So the app accepts requests to your domain and generates correct URLs:
 
 To serve the app at a subdomain (e.g. `longshot.jaredmelnyk.com`) using only DNS—no proxy or server config on Green Geeks:
 
-1. **In Render:** Open your **Web Service** → **Settings** → **Custom Domains** → **Add Custom Domain**. Enter `longshot.jaredmelnyk.com`. Do **not** set `RAILS_RELATIVE_URL_ROOT`; the app is served at the root of this host.
+1. **In Render:** Open your **Web Service** → **Settings** → **Custom Domains** → **Add Custom Domain**. Enter `longshot.jaredmelnyk.com`. The app is served at the root of this host.
 2. **In Green Geeks:** Log in → **cPanel** → **Zone Editor** (or **Domains** → **DNS**). For jaredmelnyk.com, add:
    - **Type:** CNAME  
    - **Name:** `longshot`  
@@ -104,18 +104,7 @@ To serve the app at a subdomain (e.g. `longshot.jaredmelnyk.com`) using only DNS
 
 ---
 
-## 6. Subpath (jaredmelnyk.com/longshot)
-
-Alternative: serve the app at a path (e.g. `jaredmelnyk.com/longshot`). This requires reverse-proxy or proxy rules on Green Geeks; the subdomain approach above is simpler.
-
-1. In Render, open your **Web Service** → **Environment**.
-2. Add: **RAILS_RELATIVE_URL_ROOT** = `/longshot`.
-3. Save and redeploy.
-4. Configure your proxy (e.g. Green Geeks) so that requests to `jaredmelnyk.com/longshot` and `jaredmelnyk.com/longshot/*` are forwarded to the Render web service URL. The path can be forwarded as-is or stripped depending on your proxy; Rails expects the request path to match the subpath when using `relative_url_root`.
-
----
-
-## 7. SSL (HTTPS)
+## 6. SSL (HTTPS)
 
 Render provides **free SSL** for custom domains. After DNS is correct, Render will issue a certificate automatically. In **Settings** → **Custom Domains**, the domain should show as secured. If it doesn’t, wait for DNS to propagate and check Render’s status.
 
