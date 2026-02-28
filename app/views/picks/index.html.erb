@@ -11,17 +11,10 @@
 
 <section class="mb-6 border border-gray-200 rounded-lg p-4 bg-white">
   <h2 class="text-lg font-semibold text-gray-900 mb-2">Tournaments</h2>
-  <ul class="space-y-2">
+  <ul class="space-y-4">
     <% @tournaments.each do |tournament| %>
-      <li>
-        <%= tournament.name %>
-        <% pick = Pick.find_by(user: current_user, tournament: tournament) %>
-        <% if pick&.pick_golfers&.any? %>
-          (<%= pick.golfers.map(&:name).join(", ") %>)
-          <%= link_to "Edit", edit_pool_pick_path(@pool, pick), class: "text-emerald-600 hover:underline ml-1" %>
-        <% else %>
-          <%= link_to "Make picks", new_pool_pick_path(@pool, tournament_id: tournament.id), class: "text-emerald-600 hover:underline ml-1" %>
-        <% end %>
+      <li class="border-b border-gray-100 pb-3 last:border-0 last:pb-0">
+        <%= render "picks/tournament_with_picks", tournament: tournament, pool: @pool, pick: @picks_by_tournament[tournament.id] %>
       </li>
     <% end %>
   </ul>

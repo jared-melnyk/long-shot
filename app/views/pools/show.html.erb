@@ -14,10 +14,12 @@
 
 <section class="mb-6 border border-gray-200 rounded-lg p-4 bg-white">
   <h2 class="text-lg font-semibold text-gray-900 mb-2">Tournaments in this pool</h2>
-  <ul class="space-y-2">
+  <ul class="space-y-4">
     <% @pool.tournaments.order(:starts_at).each do |t| %>
-      <li class="flex items-center gap-2 flex-wrap">
-        <%= t.name %> (<%= t.starts_at&.strftime("%b %d") %>)
+      <li class="flex items-start gap-2 flex-wrap border-b border-gray-100 pb-3 last:border-0 last:pb-0">
+        <div class="flex-1 min-w-0">
+          <%= render "picks/tournament_with_picks", tournament: t, pool: @pool, pick: @my_picks_by_tournament&.[](t.id) %>
+        </div>
         <% if @pool.pool_tournaments.exists?(tournament: t) %>
           <%= button_to "Remove", pool_pool_tournament_path(@pool, @pool.pool_tournaments.find_by(tournament: t)), method: :delete, form: { class: "inline-block" }, class: "rounded px-2 py-1 text-sm text-red-600 hover:text-red-700 border border-red-300 hover:border-red-400" %>
         <% end %>

@@ -6,7 +6,11 @@ class PoolsController < ApplicationController
 
   def show
     @pool = Pool.find(params[:id])
-    render :show_join if !@pool.users.include?(current_user)
+    if @pool.users.include?(current_user)
+      @my_picks_by_tournament = Pick.where(user: current_user, tournament: @pool.tournaments).includes(pick_golfers: :golfer).index_by(&:tournament_id)
+    else
+      render :show_join
+    end
   end
 
   def new

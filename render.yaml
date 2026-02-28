@@ -33,5 +33,4 @@ services:
           name: long-shot-db
           property: connectionString
       # Add BALLDONTLIE_API_KEY in Render dashboard (Environment) for PGA API
-      # For custom domain (e.g. Green Geeks): add APP_HOST=yourdomain.com in Environment
-      # For subpath at jaredmelnyk.com/longshot add RAILS_RELATIVE_URL_ROOT=/longshot in Environment
+      # For custom domain (e.g. subdomain longshot.jaredmelnyk.com): add APP_HOST in Environment

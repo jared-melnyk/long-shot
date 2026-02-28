@@ -1,3 +1,13 @@
-<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="256" cy="256" r="256" fill="red"/>
+<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <circle cx="256" cy="256" r="256" fill="#059669"/>
+  <circle cx="256" cy="256" r="120" fill="#fff"/>
+  <%# Dimples (simplified pattern) %>
+  <circle cx="220" cy="220" r="8" fill="#059669" opacity="0.4"/>
+  <circle cx="256" cy="200" r="8" fill="#059669" opacity="0.4"/>
+  <circle cx="292" cy="220" r="8" fill="#059669" opacity="0.4"/>
+  <circle cx="292" cy="256" r="8" fill="#059669" opacity="0.4"/>
+  <circle cx="292" cy="292" r="8" fill="#059669" opacity="0.4"/>
+  <circle cx="256" cy="312" r="8" fill="#059669" opacity="0.4"/>
+  <circle cx="220" cy="292" r="8" fill="#059669" opacity="0.4"/>
+  <circle cx="220" cy="256" r="8" fill="#059669" opacity="0.4"/>
 </svg>
