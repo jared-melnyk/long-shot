@@ -1,1 +1,6 @@
 @import "tailwindcss";
+
+/* Scan views and helpers so Tailwind includes used utilities */
+@source "../../views/**/*.erb";
+@source "../../views/**/*.html";
+@source "../../helpers/**/*.rb";
