@@ -19,6 +19,6 @@ Things you may want to cover:
 
 * Services (job queues, cache servers, search engines, etc.)
 
-* Deployment instructions
+* Deployment instructions: see [docs/deploy-render.md](docs/deploy-render.md) for deploying to Render and connecting a custom domain (e.g. Green Geeks).
 
 * ...

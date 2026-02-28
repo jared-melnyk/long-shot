@@ -1,0 +1,36 @@
+# Render Blueprint: golf_pool
+# Deploy from GitHub: connect repo in Render dashboard, then use this file for one-click setup.
+# See docs/deploy-render.md for custom domain (Green Geeks) and env var steps.
+
+databases:
+  - name: golf-pool-db
+    databaseName: golf_pool
+    plan: free
+    # region: oregon  # optional; defaults to your region
+
+services:
+  - type: web
+    name: golf-pool-web
+    runtime: ruby
+    plan: free
+
+    buildCommand: bundle install && bundle exec rails assets:precompile && bundle exec rails assets:clean
+    startCommand: ./bin/rails db:prepare && ./bin/rails server
+
+    healthCheckPath: /up
+
+    envVars:
+      - key: RAILS_ENV
+        value: production
+      - key: RAILS_MASTER_KEY
+        sync: false
+      - key: WEB_CONCURRENCY
+        value: 2
+      - key: SOLID_QUEUE_IN_PUMA
+        value: "true"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: golf-pool-db
+          property: connectionString
+      # Add BALLDONTLIE_API_KEY in Render dashboard (Environment) for PGA API
+      # For custom domain (e.g. Green Geeks): add APP_HOST=yourdomain.com in Environment
