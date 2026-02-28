@@ -29,4 +29,3 @@ class LockOddsJob < ApplicationJob
     Rails.logger.error("LockOddsJob failed for pool_tournament #{pool_tournament_id}: #{e.class}: #{e.message}")
   end
 end
-

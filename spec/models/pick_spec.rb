@@ -23,4 +23,3 @@ RSpec.describe Pick, type: :model do
     end
   end
 end
-

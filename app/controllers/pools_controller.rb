@@ -6,7 +6,7 @@ class PoolsController < ApplicationController
 
   def show
     @pool = Pool.find(params[:id])
-    return render :show_join if !@pool.users.include?(current_user)
+    render :show_join if !@pool.users.include?(current_user)
   end
 
   def new

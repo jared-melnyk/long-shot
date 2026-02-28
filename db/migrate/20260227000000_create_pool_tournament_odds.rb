@@ -13,4 +13,3 @@ class CreatePoolTournamentOdds < ActiveRecord::Migration[8.1]
     add_index :pool_tournament_odds, [ :pool_tournament_id, :golfer_id ], unique: true, name: "index_pool_tournament_odds_on_pt_and_golfer"
   end
 end
-

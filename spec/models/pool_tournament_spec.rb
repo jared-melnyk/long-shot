@@ -33,4 +33,3 @@ RSpec.describe PoolTournament, type: :model do
     end
   end
 end
-

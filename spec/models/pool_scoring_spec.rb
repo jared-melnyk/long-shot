@@ -38,4 +38,3 @@ RSpec.describe Pool, type: :model do
     end
   end
 end
-

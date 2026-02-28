@@ -32,4 +32,3 @@ RSpec.describe LockOddsJob, type: :job do
     expect(odds.locked_at).to be_within(5.seconds).of(Time.current)
   end
 end
-

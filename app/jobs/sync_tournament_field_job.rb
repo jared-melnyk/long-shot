@@ -10,4 +10,3 @@ class SyncTournamentFieldJob < ApplicationJob
     Rails.logger.error("SyncTournamentFieldJob failed for tournament #{tournament_id}: #{e.class}: #{e.message}")
   end
 end
-
