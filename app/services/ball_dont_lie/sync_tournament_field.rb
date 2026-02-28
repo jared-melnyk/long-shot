@@ -15,6 +15,7 @@ module BallDontLie
 
       api_entries = @client.fetch_all_tournament_field(tournament_id: external_id.to_i)
       created = updated = 0
+      field_golfer_ids = []
       api_entries.each do |entry|
         player = entry["player"]
         next if player.blank?
@@ -27,6 +28,12 @@ module BallDontLie
           golfer.save!
           updated += 1
         end
+        field_golfer_ids << golfer.id
+      end
+      # Replace tournament field so the picks dropdown only shows these golfers
+      @tournament.tournament_fields.destroy_all
+      field_golfer_ids.uniq.each do |golfer_id|
+        @tournament.tournament_fields.create!(golfer_id: golfer_id)
       end
       { created: created, updated: updated, total: api_entries.size }
     end

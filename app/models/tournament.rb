@@ -3,6 +3,8 @@ class Tournament < ApplicationRecord
   has_many :pools, through: :pool_tournaments
   has_many :picks, dependent: :destroy
   has_many :tournament_results, dependent: :destroy
+  has_many :tournament_fields, dependent: :destroy
+  has_many :field_golfers, through: :tournament_fields, source: :golfer
 
   validates :name, presence: true
 

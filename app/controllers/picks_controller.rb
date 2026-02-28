@@ -12,7 +12,7 @@ class PicksController < ApplicationController
   def new
     @pick = Pick.find_or_initialize_by(user: current_user, tournament: @tournament)
     5.times { |i| @pick.pick_golfers.build(slot: i + 1) if @pick.pick_golfers.none? { |pg| pg.slot == i + 1 } }
-    @golfers = Golfer.order(:name)
+    @golfers = @tournament.field_golfers.order(:name)
   end
 
   def create
@@ -27,14 +27,16 @@ class PicksController < ApplicationController
     if @pick.save
       redirect_to pool_picks_path(@pool), notice: "Picks saved."
     else
-      @golfers = Golfer.order(:name)
+      @golfers = @tournament.field_golfers.order(:name)
       render :new, status: :unprocessable_entity
     end
   end
 
   def edit
-    # @pick and @tournament are set in before_actions
-    @golfers = Golfer.order(:name)
+    # @pick and @tournament are set in before_actions. Include field + already-picked so existing picks stay visible.
+    field = @tournament.field_golfers
+    picked = @pick.golfers.to_a
+    @golfers = (field + picked).uniq.sort_by(&:name)
   end
 
   def update
@@ -49,7 +51,9 @@ class PicksController < ApplicationController
       redirect_to pool_picks_path(@pool), notice: "Picks updated."
     else
       @tournament = @pick.tournament
-      @golfers = Golfer.order(:name)
+      field = @tournament.field_golfers.to_a
+      picked = @pick.golfers.to_a
+      @golfers = (field + picked).uniq.sort_by(&:name)
       render :edit, status: :unprocessable_entity
     end
   end
