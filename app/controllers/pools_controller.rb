@@ -18,6 +18,7 @@ class PoolsController < ApplicationController
 
   def create
     @pool = Pool.new(pool_params)
+    @pool.creator = current_user
     if @pool.save
       @pool.pool_users.create!(user: current_user)
       redirect_to @pool, notice: "Pool created. Add tournaments and invite others."

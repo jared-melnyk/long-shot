@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_01_043421) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_01_172909) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -78,9 +78,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_01_043421) do
 
   create_table "pools", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.bigint "creator_id"
     t.string "name"
     t.string "token", null: false
     t.datetime "updated_at", null: false
+    t.index ["creator_id"], name: "index_pools_on_creator_id"
     t.index ["token"], name: "index_pools_on_token", unique: true
   end
 
@@ -277,6 +279,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_01_043421) do
   add_foreign_key "pool_tournaments", "tournaments"
   add_foreign_key "pool_users", "pools"
   add_foreign_key "pool_users", "users"
+  add_foreign_key "pools", "users", column: "creator_id"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

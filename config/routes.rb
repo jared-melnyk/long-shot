@@ -9,10 +9,8 @@ Rails.application.routes.draw do
   post "login", to: "sessions#create"
   delete "logout", to: "sessions#destroy", as: :logout
 
-  resources :tournaments, only: [ :index, :new, :create, :show ] do
-    resources :tournament_results, only: [ :create, :destroy ], path: "results"
-  end
-  resources :golfers, only: [ :index, :new, :create ]
+  resources :tournaments, only: [ :index, :show ]
+  resources :golfers, only: [ :index ]
 
   get "sync", to: "sync#index", as: :sync_index
   post "sync/tournaments", to: "sync#tournaments"

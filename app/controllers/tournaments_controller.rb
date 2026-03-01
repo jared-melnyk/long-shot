@@ -9,24 +9,7 @@ class TournamentsController < ApplicationController
     @results = sorted_tournament_results
   end
 
-  def new
-    @tournament = Tournament.new
-  end
-
-  def create
-    @tournament = Tournament.new(tournament_params)
-    if @tournament.save
-      redirect_to tournaments_path, notice: "Tournament added."
-    else
-      render :new, status: :unprocessable_entity
-    end
-  end
-
   private
-
-  def tournament_params
-    params.require(:tournament).permit(:name, :starts_at, :ends_at, :external_id)
-  end
 
   def auto_sync_field_and_results
     # Sync field if not already loaded
