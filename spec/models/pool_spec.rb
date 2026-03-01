@@ -62,6 +62,22 @@ RSpec.describe Pool, type: :model do
     end
   end
 
+  describe "#start_date" do
+    it "returns the starts_at of the first tournament by start time when pool has tournaments" do
+      pool_with_dates = Pool.create!(name: "Pool with dates")
+      early = Tournament.create!(name: "Early", starts_at: 1.week.from_now, ends_at: 2.weeks.from_now)
+      late = Tournament.create!(name: "Late", starts_at: 2.weeks.from_now, ends_at: 3.weeks.from_now)
+      PoolTournament.create!(pool: pool_with_dates, tournament: late)
+      PoolTournament.create!(pool: pool_with_dates, tournament: early)
+      expect(pool_with_dates.start_date).to eq(early.starts_at)
+    end
+
+    it "returns nil when pool has no tournaments" do
+      empty_pool = Pool.create!(name: "Empty")
+      expect(empty_pool.start_date).to be_nil
+    end
+  end
+
   describe "#total_points_for" do
     it "returns 0 when user has no pick for any pool tournament" do
       expect(pool.total_points_for(user)).to eq(0)
