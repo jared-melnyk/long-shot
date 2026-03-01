@@ -15,7 +15,7 @@
     <% results_list.each do |r| %>
       <li class="flex items-center gap-2 flex-wrap">
         <%= display_place(r, results_list) %> — <%= r.golfer.name %> — <%= @tournament.completed? && r.prize_money.present? ? "$#{number_with_delimiter(r.prize_money.to_i)}" : "TBD" %>
-        <%= button_to "Remove", tournament_tournament_result_path(@tournament, r), method: :delete, form: { class: "inline-block" }, class: "rounded px-2 py-1 text-sm text-red-600 hover:text-red-700 border border-red-300" %>
+        <%= button_to "Remove", tournament_tournament_result_path(@tournament, r), method: :delete, form: { class: "inline-block", data: { turbo_confirm: "Removal cannot be undone. Are you sure?" } }, class: "rounded px-2 py-1 text-sm text-red-600 hover:text-red-700 border border-red-300" %>
       </li>
     <% end %>
   </ul>
