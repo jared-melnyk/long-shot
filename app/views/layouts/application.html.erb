@@ -37,16 +37,37 @@
         <% end %>
       </nav>
     </header>
-    <div class="max-w-4xl mx-auto px-4 mt-2">
-      <% if flash[:notice] %>
-        <p class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-lg" role="alert"><%= flash[:notice] %></p>
+    <div class="flex min-h-screen">
+      <% if current_user %>
+        <aside class="w-48 flex-shrink-0 border-r border-gray-200 bg-white p-4">
+          <nav class="space-y-1">
+            <%= link_to "Pools", pools_path, class: "block rounded px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 no-underline" %>
+            <%= link_to "Tournaments", tournaments_path, class: "block rounded px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 no-underline" %>
+            <%= link_to "Golfers", golfers_path, class: "block rounded px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 no-underline" %>
+            <%= link_to "Sync", sync_index_path, class: "block rounded px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 no-underline" %>
+            <% if @pool && @pool.users.include?(current_user) %>
+              <div class="pt-2 mt-2 border-t border-gray-200">
+                <div class="px-3 py-1 text-xs font-medium text-gray-500 uppercase">This pool</div>
+                <%= link_to @pool.name, pool_path(@pool), class: "block rounded px-3 py-2 text-sm text-emerald-600 hover:bg-gray-100 no-underline" %>
+                <%= link_to "My picks", pool_picks_path(@pool), class: "block rounded px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 no-underline" %>
+              </div>
+            <% end %>
+          </nav>
+        </aside>
       <% end %>
-      <% if flash[:alert] %>
-        <p class="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg" role="alert"><%= flash[:alert] %></p>
-      <% end %>
+      <div class="flex-1 min-w-0">
+        <div class="max-w-4xl mx-auto px-4 mt-2">
+          <% if flash[:notice] %>
+            <p class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-lg" role="alert"><%= flash[:notice] %></p>
+          <% end %>
+          <% if flash[:alert] %>
+            <p class="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg" role="alert"><%= flash[:alert] %></p>
+          <% end %>
+        </div>
+        <main class="max-w-4xl mx-auto px-4 py-6">
+          <%= yield %>
+        </main>
+      </div>
     </div>
-    <main class="max-w-4xl mx-auto px-4 py-6">
-      <%= yield %>
-    </main>
   </body>
 </html>
