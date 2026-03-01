@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   post "login", to: "sessions#create"
   delete "logout", to: "sessions#destroy", as: :logout
 
-  resources :tournaments, only: [ :index, :new, :create, :show ] do
+  resources :tournaments, only: [ :index, :show ] do
     resources :tournament_results, only: [ :create, :destroy ], path: "results"
   end
   resources :golfers, only: [ :index ]
