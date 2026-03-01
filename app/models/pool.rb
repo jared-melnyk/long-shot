@@ -1,4 +1,6 @@
 class Pool < ApplicationRecord
+  belongs_to :creator, class_name: "User", optional: true
+
   has_many :pool_tournaments, dependent: :destroy
   has_many :tournaments, through: :pool_tournaments
   has_many :pool_users, dependent: :destroy
