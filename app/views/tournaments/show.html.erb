@@ -4,7 +4,7 @@
 <% if @tournament.external_id.present? %>
   <p class="flex gap-2 flex-wrap mb-6">
     <%= button_to "Sync field", sync_field_path, method: :post, params: { tournament_id: @tournament.id }, form: { class: "inline-block" }, class: "rounded px-3 py-1.5 text-sm bg-emerald-600 text-white hover:bg-emerald-700" %>
-    <%= button_to "Sync results from API", sync_tournament_results_path(@tournament), method: :post, form: { class: "inline-block" }, class: "rounded px-3 py-1.5 text-sm bg-emerald-600 text-white hover:bg-emerald-700" %>
+    <%= button_to "Sync results", sync_tournament_results_path(@tournament), method: :post, form: { class: "inline-block" }, class: "rounded px-3 py-1.5 text-sm bg-emerald-600 text-white hover:bg-emerald-700" %>
   </p>
 <% end %>
 
@@ -20,7 +20,7 @@
     <% end %>
   </ul>
   <% if @tournament.tournament_results.empty? %>
-    <p class="text-gray-600">No results yet. Field and results may still be syncing, or add below (e.g. from API or manual entry).</p>
+    <p class="text-gray-600">No results yet. Field and results may still be syncing, or add below.</p>
   <% end %>
 </section>
 
