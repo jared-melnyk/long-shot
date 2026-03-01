@@ -2,6 +2,18 @@
 <% if @pool.start_date.present? %>
   <p class="text-gray-600 mb-4">Starts <%= @pool.start_date.strftime("%B %d, %Y") %></p>
 <% end %>
+<% if current_user && @pool.users.include?(current_user) %>
+  <p class="mb-4">
+    <button type="button"
+            data-invite-url="<%= pool_url(@pool) %>"
+            data-controller="clipboard"
+            data-action="click->clipboard#copy"
+            class="rounded px-4 py-2 text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-700">
+      Invite to pool
+    </button>
+    <span data-clipboard-target="feedback" class="ml-2 text-sm text-gray-600 hidden">Link copied!</span>
+  </p>
+<% end %>
 
 <section class="mb-6 border border-gray-200 rounded-lg p-4 bg-white">
   <h2 class="text-lg font-semibold text-gray-900 mb-2">Standings</h2>
