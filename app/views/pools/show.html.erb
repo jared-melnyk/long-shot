@@ -1,4 +1,19 @@
 <h1 class="text-2xl font-bold text-gray-900 mb-4"><%= @pool.name %></h1>
+<% if @pool.start_date.present? %>
+  <p class="text-gray-600 mb-4">Starts <%= @pool.start_date.strftime("%B %d, %Y") %></p>
+<% end %>
+<% if current_user && @pool.users.include?(current_user) %>
+  <p class="mb-4">
+    <button type="button"
+            data-invite-url="<%= pool_url(@pool) %>"
+            data-controller="clipboard"
+            data-action="click->clipboard#copy"
+            class="rounded px-4 py-2 text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-700">
+      Invite to pool
+    </button>
+    <span data-clipboard-target="feedback" class="ml-2 text-sm text-gray-600 hidden">Link copied!</span>
+  </p>
+<% end %>
 
 <section class="mb-6 border border-gray-200 rounded-lg p-4 bg-white">
   <h2 class="text-lg font-semibold text-gray-900 mb-2">Standings</h2>
@@ -53,8 +68,3 @@
     <%= f.submit "Add member", class: "rounded px-3 py-1.5 text-sm bg-emerald-600 text-white hover:bg-emerald-700" %>
   <% end %>
 </section>
-
-<p class="mb-2">
-  <%= link_to "My picks", pool_picks_path(@pool), class: "text-emerald-600 hover:underline" %>
-</p>
-<p><%= link_to "Back to pools", pools_path, class: "text-gray-600 hover:text-gray-900" %></p>

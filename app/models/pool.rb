@@ -6,6 +6,11 @@ class Pool < ApplicationRecord
 
   validates :name, presence: true
 
+  # Start date of the pool = start date of the first tournament (by starts_at).
+  def start_date
+    tournaments.order(:starts_at).limit(1).pick(:starts_at)
+  end
+
   # Standings: total points per user from their picks in this pool's tournaments.
   # Points = prize money + odds-based bonus where available.
   # Returns array of [ user, total_points ] sorted by total descending.

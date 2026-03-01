@@ -21,7 +21,7 @@ RSpec.describe "Tournaments", type: :request do
       get tournament_path(tournament)
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Sync field")
-      expect(response.body).to include("Sync results from API")
+      expect(response.body).to include("Sync results")
     end
 
     it "shows results list when tournament has results" do

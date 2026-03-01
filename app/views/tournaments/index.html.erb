@@ -12,8 +12,3 @@
 <% if @tournaments.empty? %>
   <p class="text-gray-600 mb-6">No tournaments yet. Add one to get started.</p>
 <% end %>
-
-<p class="flex gap-4 text-gray-600">
-  <%= link_to "Sync from API", sync_index_path, class: "hover:text-gray-900" %>
-  <%= link_to "Back", pools_path, class: "hover:text-gray-900" %>
-</p>

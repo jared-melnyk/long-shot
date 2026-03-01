@@ -79,10 +79,9 @@ module BallDontLie
         return get(path, **params, retry_count: retry_count + 1)
       end
       if res.code == "401"
-        hint = path.include?("tournament_field") ? " Tournament field requires BALLDONTLIE GOAT tier ($39.99/mo). Use \"Sync results\" on a completed tournament to add golfers (ALL-STAR)." : " Check BALLDONTLIE_API_KEY in .env."
-        raise "API 401 Unauthorized.#{hint}"
+        raise "Unauthorized. Check your configuration or try again later."
       end
-      raise "API error #{res.code}: #{res.body}" unless res.is_a?(Net::HTTPSuccess)
+      raise "Service error #{res.code}: #{res.body}" unless res.is_a?(Net::HTTPSuccess)
 
       JSON.parse(res.body)
     end
