@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class LandingController < ApplicationController
-  skip_before_action :require_login, only: [ :index ]
+  skip_before_action :require_login, only: [ :index, :rules ]
 
   def index
     if current_user
@@ -9,5 +9,8 @@ class LandingController < ApplicationController
     else
       render :index
     end
+  end
+
+  def rules
   end
 end
