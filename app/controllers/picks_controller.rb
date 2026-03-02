@@ -7,17 +7,21 @@ class PicksController < ApplicationController
   def index
     @standings = @pool.standings
     @tournaments = @pool.tournaments.order(:starts_at)
-    @picks_by_tournament = Pick.where(user: current_user, tournament: @tournaments).includes(pick_golfers: :golfer).index_by(&:tournament_id)
+    @picks_by_tournament = Pick
+      .joins(:pool_tournament)
+      .where(user: current_user, pool_tournaments: { pool_id: @pool.id, tournament_id: @tournaments.ids })
+      .includes(pick_golfers: :golfer)
+      .index_by(&:tournament_id)
   end
 
   def new
-    @pick = Pick.find_or_initialize_by(user: current_user, tournament: @tournament)
+    @pick = Pick.find_or_initialize_by(user: current_user, pool_tournament: @pool_tournament)
     4.times { |i| @pick.pick_golfers.build(slot: i + 1) if @pick.pick_golfers.none? { |pg| pg.slot == i + 1 } }
     @golfers = @tournament.field_golfers.order(:name)
   end
 
   def create
-    @pick = Pick.find_or_initialize_by(user: current_user, tournament: @tournament)
+    @pick = Pick.find_or_initialize_by(user: current_user, pool_tournament: @pool_tournament)
     @pick.pick_golfers.destroy_all if @pick.persisted?
     slot = 1
     (params[:golfer_ids] || []).first(4).each do |golfer_id|
@@ -67,6 +71,7 @@ class PicksController < ApplicationController
 
   def set_tournament
     @tournament = @pool.tournaments.find(params[:tournament_id])
+    @pool_tournament = @pool.pool_tournaments.find_by!(tournament: @tournament)
   end
 
   def set_pick
@@ -75,7 +80,7 @@ class PicksController < ApplicationController
   end
 
   def picks_scope
-    Pick.where(user: current_user, tournament: @pool.tournaments)
+    Pick.joins(:pool_tournament).where(user: current_user, pool_tournaments: { pool_id: @pool.id })
   end
 
   def ensure_tournament_unlocked!
