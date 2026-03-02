@@ -9,7 +9,7 @@ RSpec.describe "Rules", type: :request do
         get rules_path
 
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include("How scoring works")
+        expect(response.body).to include("How to Win")
       end
     end
 
@@ -25,7 +25,7 @@ RSpec.describe "Rules", type: :request do
 
         expect(response).to have_http_status(:ok)
         expect(response).not_to redirect_to(pools_path)
-        expect(response.body).to include("How scoring works")
+        expect(response.body).to include("How to Win")
       end
     end
   end
