@@ -10,7 +10,7 @@ services:
   - type: web
     name: long-shot-web
     runtime: ruby
-    plan: free
+    plan: starter
 
     buildCommand: bundle install && bundle exec rails tailwindcss:build && bundle exec rails assets:precompile && bundle exec rails assets:clean
     startCommand: ./bin/rails db:prepare && ./bin/rails server
@@ -22,7 +22,7 @@ services:
         value: production
       - key: RAILS_MASTER_KEY
         sync: false
-      # 512MB RAM: use 1 worker to leave room for Solid Queue (supervisor, dispatcher, worker, scheduler).
+      # Use 1 worker to leave room for Solid Queue (supervisor, dispatcher, worker, scheduler).
       - key: WEB_CONCURRENCY
         value: "1"
       - key: RAILS_MAX_THREADS

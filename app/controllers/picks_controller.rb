@@ -101,7 +101,7 @@ class PicksController < ApplicationController
 
   def sync_tournament_field(tournament)
     if tournament.external_id.blank?
-      flash.now[:alert] = "This tournament has no external ID yet. Sync tournaments from the Sync page, then add this tournament to the pool."
+      flash.now[:alert] = "This tournament has no external ID yet. Add it to a pool; tournaments are synced when you make picks."
       return
     end
 
@@ -113,7 +113,7 @@ class PicksController < ApplicationController
     end
   rescue => e
     Rails.logger.error("Failed to sync tournament field from API: #{e.class}: #{e.message}")
-    flash.now[:alert] = "Could not load tournament field: #{e.message}. Try again later or use the Sync page."
+    flash.now[:alert] = "Could not load tournament field: #{e.message}. Try again later or use the Sync field button on the tournament page."
   end
 
   def field_not_available_message(tournament)
@@ -121,7 +121,7 @@ class PicksController < ApplicationController
     if tournament.starts_at.present?
       msg += " Picks will open once the field is released (typically before #{tournament.starts_at.strftime('%B %-d')})."
     end
-    msg += " You can try again later or use \"Sync field\" on the Sync page."
+    msg += " You can try again later or use the Sync field button on the tournament page."
     msg
   end
 end

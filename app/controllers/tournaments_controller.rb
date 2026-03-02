@@ -34,7 +34,7 @@ class TournamentsController < ApplicationController
     end
   rescue => e
     Rails.logger.error("Failed to sync tournament field: #{e.class}: #{e.message}")
-    flash.now[:alert] = "Field and results are not available yet. #{e.message} Try again later or use the Sync page."
+    flash.now[:alert] = "Field and results are not available yet. #{e.message} Try again later."
   end
 
   def sync_results
@@ -42,7 +42,7 @@ class TournamentsController < ApplicationController
     if result[:total].to_i > 0
       flash.now[:notice] = (flash.now[:notice].presence ? flash.now[:notice] + " " : "") + "Synced #{result[:total]} results."
     else
-      flash.now[:alert] = (flash.now[:alert].presence ? flash.now[:alert] + " " : "") + "Results are not available yet. Try again later or use the Sync page."
+      flash.now[:alert] = (flash.now[:alert].presence ? flash.now[:alert] + " " : "") + "Results are not available yet. Try again later."
     end
   rescue => e
     Rails.logger.error("Failed to sync tournament results: #{e.class}: #{e.message}")
@@ -52,7 +52,7 @@ class TournamentsController < ApplicationController
   def field_not_available_message
     msg = "This tournament's field is not yet available."
     msg += " Picks will open once the field is released (typically before #{@tournament.starts_at.strftime('%B %-d')})." if @tournament.starts_at.present?
-    msg += " Try again later or use \"Sync field\" on the Sync page."
+    msg += " Try again later or use the Sync field button on this page."
     msg
   end
 
