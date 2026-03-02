@@ -10,11 +10,7 @@ Rails.application.routes.draw do
   delete "logout", to: "sessions#destroy", as: :logout
 
   resources :tournaments, only: [ :index, :show ]
-  resources :golfers, only: [ :index ]
 
-  get "sync", to: "sync#index", as: :sync_index
-  post "sync/tournaments", to: "sync#tournaments"
-  post "sync/players", to: "sync#players"
   post "sync/tournament_results/:tournament_id", to: "sync#tournament_results", as: :sync_tournament_results
   post "sync/field", to: "sync#field", as: :sync_field
 
