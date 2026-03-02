@@ -30,4 +30,3 @@ RSpec.describe "Rules", type: :request do
     end
   end
 end
-
