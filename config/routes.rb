@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   root "landing#index"
+  get "rules", to: "landing#rules", as: :rules
 
   get "signup", to: "users#new", as: :signup
   post "signup", to: "users#create"
