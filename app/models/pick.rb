@@ -1,10 +1,12 @@
 class Pick < ApplicationRecord
   belongs_to :user
-  belongs_to :tournament
+  belongs_to :pool_tournament
   has_many :pick_golfers, dependent: :destroy
   has_many :golfers, through: :pick_golfers
 
-  validates :tournament_id, uniqueness: { scope: :user_id }
+  validates :pool_tournament_id, uniqueness: { scope: :user_id }
+
+  delegate :tournament, :tournament_id, to: :pool_tournament
 
    validate :no_duplicate_golfers
 

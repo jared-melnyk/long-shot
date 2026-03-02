@@ -37,7 +37,7 @@ class Pool < ApplicationRecord
   def total_points_for(user)
     pool_tournaments.includes(:tournament).sum do |pool_tournament|
       tournament = pool_tournament.tournament
-      pick = Pick.find_by(user: user, tournament: tournament)
+      pick = Pick.find_by(user: user, pool_tournament: pool_tournament)
       next 0.to_d unless pick
 
       pick.golfers.sum do |golfer|
