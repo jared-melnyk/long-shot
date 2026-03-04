@@ -97,7 +97,7 @@ class PicksController < ApplicationController
       Rails.cache.write(tournament_field_sync_cache_key(@tournament), Time.current, expires_in: 4.hours)
     end
 
-    if @tournament.starts_at.present? && @tournament.starts_at <= Time.current
+    if @tournament.picks_locked?
       redirect_to pool_picks_path(@pool), alert: "Picks are locked because #{@tournament.name} has already started."
     end
   end

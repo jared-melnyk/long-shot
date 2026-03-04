@@ -7,8 +7,16 @@
       <li><%= pg.golfer&.name %></li>
     <% end %>
   </ul>
-  <%= link_to "Edit", edit_pool_pick_path(pool, pick), class: "text-emerald-600 hover:underline text-sm mt-1 inline-block" %>
+  <% unless tournament.picks_locked? %>
+    <%= link_to "Edit", edit_pool_pick_path(pool, pick), class: "text-emerald-600 hover:underline text-sm mt-1 inline-block" %>
+  <% end %>
 <% else %>
   <p class="text-gray-500 text-sm mt-1">Picks TBD</p>
-  <%= link_to "Make picks", new_pool_pick_path(pool, tournament_id: tournament.id), class: "text-emerald-600 hover:underline text-sm mt-1 inline-block" %>
+  <% if tournament.picks_open? %>
+    <%= link_to "Make picks", new_pool_pick_path(pool, tournament_id: tournament.id), class: "text-emerald-600 hover:underline text-sm mt-1 inline-block" %>
+  <% else %>
+    <span class="text-gray-500 text-sm mt-1 inline-block">
+      Picks open on <%= l(tournament.picks_open_at.to_date, format: :long) %>
+    </span>
+  <% end %>
 <% end %>
