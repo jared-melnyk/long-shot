@@ -3,6 +3,8 @@
 require "rails_helper"
 
 RSpec.describe Tournament, type: :model do
+  include ActiveSupport::Testing::TimeHelpers
+
   describe "#completed?" do
     it "returns true when ends_at is in the past" do
       tournament = Tournament.create!(name: "Past", starts_at: 5.days.ago, ends_at: 2.days.ago)
@@ -63,6 +65,70 @@ RSpec.describe Tournament, type: :model do
     it "excludes tournaments that ended more than 1 day ago" do
       t = Tournament.create!(name: "Past", starts_at: 5.days.ago, ends_at: 2.days.ago)
       expect(described_class.addable_to_pool).not_to include(t)
+    end
+  end
+
+  describe "#picks_open_at" do
+    it "returns 4 days before starts_at" do
+      starts_at = Time.zone.parse("2026-03-10 12:00:00")
+      tournament = Tournament.create!(name: "Event", starts_at: starts_at)
+
+      expect(tournament.picks_open_at).to eq(starts_at - 4.days)
+    end
+
+    it "returns nil when starts_at is nil" do
+      tournament = Tournament.create!(name: "No start", starts_at: nil)
+
+      expect(tournament.picks_open_at).to be_nil
+    end
+  end
+
+  describe "#picks_open?" do
+    it "is false before picks_open_at" do
+      starts_at = Time.zone.parse("2026-03-10 12:00:00")
+      tournament = Tournament.create!(name: "Event", starts_at: starts_at)
+
+      travel_to(starts_at - 5.days) do
+        expect(tournament.picks_open?).to be false
+      end
+    end
+
+    it "is true between picks_open_at and start time" do
+      starts_at = Time.zone.parse("2026-03-10 12:00:00")
+      tournament = Tournament.create!(name: "Event", starts_at: starts_at)
+
+      travel_to(starts_at - 3.days) do
+        expect(tournament.picks_open?).to be true
+      end
+    end
+
+    it "is false after tournament has started" do
+      starts_at = Time.zone.parse("2026-03-10 12:00:00")
+      tournament = Tournament.create!(name: "Event", starts_at: starts_at)
+
+      travel_to(starts_at + 1.hour) do
+        expect(tournament.picks_open?).to be false
+      end
+    end
+  end
+
+  describe "#picks_locked?" do
+    it "is false before tournament starts" do
+      starts_at = Time.zone.parse("2026-03-10 12:00:00")
+      tournament = Tournament.create!(name: "Event", starts_at: starts_at)
+
+      travel_to(starts_at - 1.hour) do
+        expect(tournament.picks_locked?).to be false
+      end
+    end
+
+    it "is true once tournament has started" do
+      starts_at = Time.zone.parse("2026-03-10 12:00:00")
+      tournament = Tournament.create!(name: "Event", starts_at: starts_at)
+
+      travel_to(starts_at + 1.minute) do
+        expect(tournament.picks_locked?).to be true
+      end
     end
   end
 end

@@ -7,6 +7,20 @@ class PoolTournament < ApplicationRecord
   after_create_commit :enqueue_sync_field
   after_create_commit :schedule_lock_odds
 
+  def picks_open_for_submission?
+    tournament&.picks_open? || false
+  end
+
+  def can_view_all_picks?(_user)
+    tournament&.picks_locked? || false
+  end
+
+  def can_view_member_picks?(viewer, member)
+    return false if viewer.nil? || member.nil?
+
+    viewer == member || can_view_all_picks?(viewer)
+  end
+
   private
 
   # Only block when tournament is completed. Started-but-not-finished is allowed.

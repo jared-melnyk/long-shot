@@ -20,6 +20,22 @@ class Tournament < ApplicationRecord
     ends_at.present? && ends_at < Time.current
   end
 
+  def picks_open_at
+    return nil if starts_at.blank?
+
+    starts_at - 4.days
+  end
+
+  def picks_open?
+    return false if starts_at.blank?
+
+    !picks_locked? && Time.current >= picks_open_at
+  end
+
+  def picks_locked?
+    started?
+  end
+
   # True if we have already synced results after the tournament ended (no need to sync again).
   def results_synced_since_completion?
     return false unless completed?

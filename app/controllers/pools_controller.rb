@@ -11,6 +11,15 @@ class PoolsController < ApplicationController
         .where(user: current_user, pool_tournaments: { pool_id: @pool.id, tournament_id: @pool.tournaments.ids })
         .includes(pick_golfers: :golfer)
         .index_by(&:tournament_id)
+
+      @picks_by_tournament_and_user = Pick
+        .joins(:pool_tournament)
+        .where(pool_tournaments: { pool_id: @pool.id, tournament_id: @pool.tournaments.ids })
+        .includes(:user, pick_golfers: :golfer)
+        .group_by(&:tournament_id)
+        .transform_values do |picks|
+          picks.index_by(&:user_id)
+        end
     else
       render :show_join
     end
