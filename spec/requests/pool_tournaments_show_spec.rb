@@ -92,5 +92,27 @@ RSpec.describe "PoolTournament scores", type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("MC")
     end
+
+    it "shows LongShot bonus from live round data when no TournamentResult yet (round 3+ = made cut)" do
+      tournament.update!(total_prize_pool: 10_000_000)
+      golfer = Golfer.create!(name: "Scottie", external_id: "185")
+      Pick.create!(user: member, pool_tournament: pool_tournament).tap do |p|
+        PickGolfer.create!(pick: p, golfer: golfer, slot: 1)
+      end
+      PoolTournamentOdds.create!(pool_tournament: pool_tournament, golfer: golfer, american_odds: 500, vendor: "dk", locked_at: Time.current)
+      # No TournamentResult — tournament still in progress
+
+      # API returns round 3 data so we infer made cut and show bonus
+      raw_round_results = [
+        { "player" => { "id" => 185 }, "round_number" => 3, "par_relative_score" => -1 }
+      ]
+      client = instance_double(BallDontLie::Client, fetch_all_player_round_results: raw_round_results, fetch_all_player_scorecards: [])
+      allow(BallDontLie::Client).to receive(:new).and_return(client)
+
+      get pool_pool_tournament_path(pool, pool_tournament)
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("10,000").or include("$10,000")
+    end
   end
 end
