@@ -46,25 +46,6 @@ class PoolTournamentsController < ApplicationController
       .where(pool_tournament: @pool_tournament)
       .group_by(&:user)
 
-    golfer_ids = @picks_by_user.values.flatten.flat_map { |pick| pick.golfers.map(&:id) }.uniq
-    results_by_golfer = TournamentResult.where(tournament: @tournament, golfer_id: golfer_ids).index_by(&:golfer_id)
-    odds_by_golfer = @pool_tournament.pool_tournament_odds.index_by(&:golfer_id)
-
-    @golfer_bonus_display = {}
-    golfer_ids.each do |gid|
-      result = results_by_golfer[gid]
-      odds_row = odds_by_golfer[gid]
-      if result
-        if result.made_cut? && odds_row
-          @golfer_bonus_display[gid] = @tournament.capped_longshot_bonus(odds_row.american_odds)
-        else
-          @golfer_bonus_display[gid] = :mc
-        end
-      else
-        @golfer_bonus_display[gid] = nil
-      end
-    end
-
     pga_tournament_id = @tournament.external_id&.to_i
     player_ids = @picks_by_user.values.flatten.flat_map { |pick| pick.golfers.map { |g| g.external_id&.to_i } }.compact.uniq
 
@@ -93,6 +74,46 @@ class PoolTournamentsController < ApplicationController
 
       @round_results = formatter.by_player_id
       @current_round = formatter.current_round_number
+    end
+
+    # Bonus column: use TournamentResult when synced; otherwise infer made cut from live round data (round 3+ = made cut).
+    golfers_by_id = {}
+    @picks_by_user.values.flatten.each { |pick| pick.golfers.each { |g| golfers_by_id[g.id] = g } }
+    golfer_ids = golfers_by_id.keys
+    results_by_golfer = TournamentResult.where(tournament: @tournament, golfer_id: golfer_ids).index_by(&:golfer_id)
+    odds_by_golfer = @pool_tournament.pool_tournament_odds.index_by(&:golfer_id)
+
+    @golfer_bonus_display = {}
+    golfer_ids.each do |gid|
+      golfer = golfers_by_id[gid]
+      result = results_by_golfer[gid]
+      odds_row = odds_by_golfer[gid]
+
+      if result
+        # Official result synced: use made_cut? and show bonus or MC
+        if result.made_cut? && odds_row
+          @golfer_bonus_display[gid] = @tournament.capped_longshot_bonus(odds_row.american_odds)
+        else
+          @golfer_bonus_display[gid] = :mc
+        end
+      elsif golfer && @round_results.present?
+        # No result yet: infer from live round data (round 3 or 4 = made cut)
+        player_result = @round_results[golfer.external_id&.to_i] || {}
+        round_numbers = (player_result[:rounds] || {}).keys
+        made_cut = round_numbers.any? { |r| r >= 3 }
+        cut_known = @current_round.present? && @current_round >= 3
+        missed_cut = cut_known && round_numbers.any? && !made_cut
+
+        if made_cut && odds_row
+          @golfer_bonus_display[gid] = @tournament.capped_longshot_bonus(odds_row.american_odds)
+        elsif missed_cut
+          @golfer_bonus_display[gid] = :mc
+        else
+          @golfer_bonus_display[gid] = nil
+        end
+      else
+        @golfer_bonus_display[gid] = nil
+      end
     end
   end
 end
