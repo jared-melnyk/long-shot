@@ -115,5 +115,12 @@ class PoolTournamentsController < ApplicationController
         @golfer_bonus_display[gid] = nil
       end
     end
+
+    # Prize money: show only when tournament is completed (from TournamentResult).
+    @golfer_prize_money = {}
+    golfer_ids.each do |gid|
+      result = results_by_golfer[gid]
+      @golfer_prize_money[gid] = @tournament.completed? && result ? (result.prize_money.to_d || 0) : nil
+    end
   end
 end
